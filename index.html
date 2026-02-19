@@ -1,0 +1,53 @@
+const interval = setInterval(() => {
+        const remaining = end - Date.now();
+        if (remaining <= 0) {
+            clearInterval(interval);
+            watchBtn.disabled = false;
+            cooldownBar.style.width = "0%";
+            setStatus("Ready");
+        } else {
+            setStatus(Cooldown: ${Math.ceil(remaining/1000)}s);
+        }
+    }, 200);
+}
+
+function checkCooldown() {
+    const end = localStorage.getItem(cooldownKey);
+    if (!end) return false;
+    return Date.now() < end;
+}
+
+function showAd() {
+    if (getAds() >= MAX_ADS) {
+        setStatus("Daily limit reached");
+        watchBtn.disabled = true;
+        return;
+    }
+    if (checkCooldown()) {
+        setStatus("Cooldown active");
+        return;
+    }
+
+    watchBtn.disabled = true;
+    setStatus("Loading Ad...");
+
+    // Simulate 15s ad
+    setTimeout(() => {
+        setStatus("Reward received!");
+        setAds(getAds() + 1);
+        updateCounter();
+        startCooldown();
+    }, AD_DURATION);
+}
+
+watchBtn.onclick = showAd;
+updateCounter();
+
+if (getAds() >= MAX_ADS) {
+    watchBtn.disabled = true;
+    setStatus("Daily limit reached");
+}
+</script>
+
+</body>
+</html>
