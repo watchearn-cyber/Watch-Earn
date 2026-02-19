@@ -1,55 +1,57 @@
-const interval = setInterval(() => {
-        const remaining = end - Date.now();
-        if (remaining <= 0) {
-            clearInterval(interval);
-            watchBtn.disabled = false;
-            cooldownBar.style.width = "0%";
-            setStatus("Ready");
-        } else {
-            setStatus(Cooldown: ${Math.ceil(remaining/1000)}s);
-        }
-    }, 200);
+let html="";
+
+for(let i=0;i<5;i++){
+
+html+=
+<div class="card">
+<p>Watch Video ${i+1} - Earn 1000 Points</p>
+<button class="task-btn" onclick="completeTask(${i})">
+${db.tasks[i]?"Completed":"Watch"}
+</button>
+</div>
+;
+
 }
 
-function checkCooldown() {
-    const end = localStorage.getItem(cooldownKey);
-    if (!end) return false;
-    return Date.now() < end;
+document.getElementById("taskList").innerHTML=html;
+
 }
 
-function showAd() {
-    if (getAds() >= MAX_ADS) {
-        setStatus("Daily limit reached");
-        watchBtn.disabled = true;
-        return;
-    }
-    if (checkCooldown()) {
-        setStatus("Cooldown active");
-        return;
-    }
+function completeTask(i){
 
-    watchBtn.disabled = true;
-    setStatus("Loading Ad...");
+if(db.tasks[i]) return;
 
-    // Simulate 15s ad
-    setTimeout(() => {
-        setStatus("Reward received!");
-        setAds(getAds() + 1);
-        updateCounter();
-        startCooldown();
-    }, AD_DURATION);
+window.open("https://youtube.com");
+
+setTimeout(()=>{
+
+db.tasks[i]=true;
+db.points+=1000;
+save();
+updateUI();
+
+alert("Task completed +1000 points");
+
+},5000);
+
 }
 
-watchBtn.onclick = showAd;
-updateCounter();
+// ENERGY REGEN
+setInterval(()=>{
 
-if (getAds() >= MAX_ADS) {
-    watchBtn.disabled = true;
-    setStatus("Daily limit reached");
+if(db.energy<100){
+db.energy+=0.5;
+if(db.energy>100) db.energy=100;
+updateUI();
+save();
 }
+
+},1000);
+
+// INIT
+updateUI();
 </script>
 
 </body>
 </html>
-
-            
+        
